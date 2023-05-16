@@ -1,0 +1,5 @@
+.idea/*
+cmake-build-debug/*
+docs/__MACOSX/Project2Graphs/Real-World-Graphs/*
+docs/Project2Graphs/Real-World-Graphs/*
+
