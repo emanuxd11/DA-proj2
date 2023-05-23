@@ -31,33 +31,14 @@ std::vector<std::string> toyParseLine(std::string const &line) {
     return fields;
 }
 
+
+
 // implementations
 
-void loadNodes(std::string file_path) {
-
-    std::ifstream stations("../docs/stations.csv");
-
-    if (stations.is_open()) {
-        int count = 0;
-        // Station station;
-        std::string line;
-        getline(stations, line); // throwaway first line read
-
-        while (getline(stations, line)) {
-
-        }
-    } else throw std::runtime_error("stations.csv file not found in docs directory!");
-
-    return ;
-}
-
 Graph Database::toyLoadGraph(std::string file_name) {
-    std::cout << "before adding vertex";
-
-
     std::ifstream toy_network("../docs/Project2Graphs/Toy-Graphs/" + file_name);
     if (!toy_network.is_open()) {
-        throw std::runtime_error(file_name + " file not found in docs directory!");
+        throw std::runtime_error(file_name + " file not found in toy graphs directory!");
     }
 
     Graph g;
@@ -99,5 +80,70 @@ Graph Database::toyLoadGraph(std::string file_name) {
     }
 
     g.sortVertexSet();
+    return g;
+}
+
+Graph loadNodes(std::string graph_name) {
+    std::ifstream real_nodes("../docs/Project2Graphs/Real-World-Graphs/" + graph_name + "/nodes.csv");
+    if (!real_nodes.is_open()) {
+        throw std::runtime_error(graph_name + " not found in real graphs directory!");
+    }
+
+    Graph g;
+    std::string line, id_str, longitude_str, latitude_str;
+    double longitude, latitude;
+    int id;
+
+    // throwaway first line 🗑
+    getline(real_nodes, line);
+
+    while (getline(real_nodes, line)) {
+        std::stringstream ss(line);
+
+        std::getline(ss, id_str, ',');
+        std::getline(ss, longitude_str, ',');
+        std::getline(ss, latitude_str, ',');
+
+        id = std::stoi(id_str);
+        longitude = std::stod(longitude_str);
+        latitude = std::stod(latitude_str);
+
+        g.addVertex(id, longitude, latitude);
+    }
+
+    g.sortVertexSet();
+    return g;
+}
+
+Graph Database::realLoadGraph(std::string graph_name) {
+
+    Graph g = loadNodes(graph_name);
+
+    std::ifstream real_edges("../docs/Project2Graphs/Real-World-Graphs/" + graph_name + "/edges.csv");
+    if (!real_edges.is_open()) {
+        throw std::runtime_error(graph_name + " not found in real graphs directory!");
+    }
+
+    std::string line, orig_id_str, dest_id_str, dist_str;
+    int orig_id, dest_id;
+    float distance;
+
+    // throw away first line 🗑
+    getline(real_edges, line);
+
+    while (getline(real_edges, line)) {
+        std::stringstream ss(line);
+
+        std::getline(ss, orig_id_str, ',');
+        std::getline(ss, dest_id_str, ',');
+        std::getline(ss, dist_str);
+
+        orig_id = std::stoi(orig_id_str);
+        dest_id = std::stoi(dest_id_str);
+        distance = std::stof(dist_str);
+
+        g.addBidirectionalEdge(orig_id, dest_id, distance);
+    }
+
     return g;
 }

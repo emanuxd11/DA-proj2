@@ -120,20 +120,20 @@ int Vertex::getIndegreeUnavailable() const {
 }
 
 // for real world graphs
-std::string Vertex::getLongitude() {
+double Vertex::getLongitude() {
     return this->longitude;
 }
 
-std::string Vertex::getLatitude() {
+double Vertex::getLatitude() {
     return this->latitude;
 }
 
-void Vertex::setLongitude(std::string longitude) {
-    this->longitude = std::move(longitude);
+void Vertex::setLongitude(double longitude) {
+    this->longitude = longitude;
 }
 
-void Vertex::setLatitude(std::string latitude) {
-    this->latitude = std::move(latitude);
+void Vertex::setLatitude(double latitude) {
+    this->latitude = latitude;
 }
 
 // for toy graphs

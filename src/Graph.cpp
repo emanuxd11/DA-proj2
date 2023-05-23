@@ -53,9 +53,23 @@ int Graph::findVertexIdx(const int &id) const {
  *  Returns true if successful, and false if a vertex with that content already exists.
  */
 bool Graph::addVertex(const int &id) {
-    if (findVertex(id) != nullptr)
+    if (findVertex(id) != nullptr) {
         return false;
+    }
+
     vertexSet.push_back(new Vertex(id));
+    return true;
+}
+
+bool Graph::addVertex(const int &id, const double &longitude, const double &latitude) {
+    if (findVertex(id) != nullptr) {
+        return false;
+    }
+
+    vertexSet.push_back(new Vertex(id));
+    vertexSet.back()->setLongitude(longitude);
+    vertexSet.back()->setLatitude(latitude);
+
     return true;
 }
 

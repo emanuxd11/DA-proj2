@@ -24,6 +24,8 @@ public:
      */
     bool addVertex(const int &id);
 
+    bool addVertex(const int &id, const double &longitude, const double &latitude);
+
     bool deleteVertex(const int &id);
 
     /*

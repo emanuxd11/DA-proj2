@@ -12,7 +12,7 @@ class Database {
 public:
     static Graph toyLoadGraph(std::string file_name);
 
-    static Graph realLoadGraph(std::string file_path);
+    static Graph realLoadGraph(std::string graph_name);
 };
 
 #endif

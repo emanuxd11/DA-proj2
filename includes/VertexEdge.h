@@ -61,10 +61,10 @@ public:
     int getIndegreeUnavailable() const;
 
     // for real world graphs
-    std::string getLongitude();
-    std::string getLatitude();
-    void setLongitude(std::string longitude);
-    void setLatitude(std::string latitude);
+    double getLongitude();
+    double getLatitude();
+    void setLongitude(double longitude);
+    void setLatitude(double latitude);
 
     // for toy graphs
     std::string getLabel();
@@ -88,8 +88,8 @@ protected:
     int queueIndex = 0;        // required by MutablePriorityQueue and UFDS
 
     // for real world graphs
-    std::string longitude;
-    std::string latitude;
+    double longitude;
+    double latitude;
 
     // for toy graphs
     std::string label;
