@@ -20,7 +20,7 @@ class Vertex {
 public:
     explicit Vertex(int id);
 
-    bool operator<(Vertex &vertex) const; // // required by MutablePriorityQueue
+    bool operator<(Vertex &vertex) const; // required by MutablePriorityQueue
 
     int getId() const;
 
@@ -50,7 +50,7 @@ public:
 
     void setPath(Edge *path);
 
-    Edge *addEdge(Vertex *dest, int w, int c);
+    Edge *addEdge(Vertex *dest, float distance);
 
     bool removeEdge(int destID);
 
@@ -59,6 +59,16 @@ public:
     void setIndegreeUnavailable(int indegree_unavailable);
 
     int getIndegreeUnavailable() const;
+
+    // for real world graphs
+    std::string getLongitude();
+    std::string getLatitude();
+    void setLongitude(std::string longitude);
+    void setLatitude(std::string latitude);
+
+    // for toy graphs
+    std::string getLabel();
+    void setLabel(std::string label);
 
 protected:
     int id;                // identifier
@@ -76,19 +86,24 @@ protected:
     std::vector<Edge *> incoming; // incoming edges
 
     int queueIndex = 0;        // required by MutablePriorityQueue and UFDS
+
+    // for real world graphs
+    std::string longitude;
+    std::string latitude;
+
+    // for toy graphs
+    std::string label;
 };
 
 /********************** Edge  ****************************/
 
 class Edge {
 public:
-    Edge(Vertex *orig, Vertex *dest, int w, int c);
+    Edge(Vertex *orig, Vertex *dest, float distance);
 
     Vertex *getDest() const;
 
-    int getCapacity() const;
-
-    int getCost() const;
+    float getDistance() const;
 
     bool isSelected() const;
 
@@ -104,12 +119,6 @@ public:
 
     void setFlow(int flow);
 
-    void setCost(int c);
-
-    bool isAlfaService() const;
-
-    bool isStandardService() const;
-
     void setAvailable(bool available);
 
     bool getAvailable();
@@ -120,9 +129,7 @@ protected:
     int custo;
     bool available = true;
 
-    int capacity; // edge capacity, can also be used for capacity
-    int cost;
-
+    float distance;
 
     // auxiliary fields
     bool selected = false;

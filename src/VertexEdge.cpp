@@ -1,5 +1,7 @@
 // By: Gonçalo Leão
 
+#include <utility>
+
 #include "../includes/VertexEdge.h"
 
 /************************* Vertex  **************************/
@@ -10,8 +12,8 @@ Vertex::Vertex(int id) : id(id) {}
  * Auxiliary function to add an outgoing edge to a vertex (this),
  * with a given destination vertex (d) and edge capacity (w).
  */
-Edge *Vertex::addEdge(Vertex *d, int w, int c) {
-    auto newEdge = new Edge(this, d, w, c);
+Edge *Vertex::addEdge(Vertex *d, float distance) {
+    auto newEdge = new Edge(this, d, distance);
     adj.push_back(newEdge);
     d->incoming.push_back(newEdge);
     return newEdge;
@@ -117,20 +119,38 @@ int Vertex::getIndegreeUnavailable() const {
     return indegree_unavailable;
 }
 
+// for real world graphs
+std::string Vertex::getLongitude() {
+    return this->longitude;
+}
+
+std::string Vertex::getLatitude() {
+    return this->latitude;
+}
+
+void Vertex::setLongitude(std::string longitude) {
+    this->longitude = std::move(longitude);
+}
+
+void Vertex::setLatitude(std::string latitude) {
+    this->latitude = std::move(latitude);
+}
+
+// for toy graphs
+std::string Vertex::getLabel() {
+    return this->label;
+}
+
+void Vertex::setLabel(std::string label) {
+    this->label = std::move(label);
+}
+
 /********************** Edge  ****************************/
 
-Edge::Edge(Vertex *orig, Vertex *dest, int w, int c) : orig(orig), dest(dest), capacity(w), cost(c) {}
+Edge::Edge(Vertex *orig, Vertex *dest, float distance) : orig(orig), dest(dest), distance(distance) {}
 
 Vertex *Edge::getDest() const {
     return this->dest;
-}
-
-int Edge::getCapacity() const {
-    return this->capacity;
-}
-
-int Edge::getCost() const{
-    return this->cost;
 }
 
 Vertex *Edge::getOrig() const {
@@ -161,22 +181,14 @@ void Edge::setFlow(int flow) {
     this->flow = flow;
 }
 
-void Edge::setCost(int c){
-    this->cost = c;
-}
-
-bool Edge::isStandardService() const {
-    return cost == 2;
-}
-
-bool Edge::isAlfaService() const {
-    return custo == 4;
-}
-
 void Edge::setAvailable(bool available) {
     this->available = available;
 }
 
 bool Edge::getAvailable() {
     return available;
+}
+
+float Edge::getDistance() const {
+    return distance;
 }

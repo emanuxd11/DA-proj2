@@ -10,20 +10,11 @@ string getInput() {
     return input_string;
 }
 
-Graph initGraph() {
-    return Database::loadGraph();
-}
-
 void displayMenu() {
     static vector<string> options = {
-            "1) Process dataset into database",
-            "2) Calculate the maximum number of trains that can simultaneously travel between two specific stations",
-            "3) Determine which stations require the most amount of trains when taking full advantage of the existing network capacity",
-            "4) Report the top-k municipalities and districts, regarding their transportation needs",
-            "5) Report the maximum number of trains that can simultaneously arrive at a given station, taking into consideration the entire railway grid",
-            "6) Calculate the maximum amount of trains that can simultaneously travel between two specific stations with minimum cost for the company",
-            "7) Calculate the maximum number of trains that can simultaneously travel between two specific stations in a network of reduced connectivity",
-            "8) Report the top-k stations most affected by each segment failure",
+            "1) Load toy dataset",
+            "2) Load real dataset",
+            "3) coming soon...3",
             "0) Quit"
     };
 
@@ -44,7 +35,29 @@ int main() {
         cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         if (opt == 1) {
-            g = initGraph();
+            cout << "Please input toy graph file name: ";
+            string file_name;
+            cin >> file_name;
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            g = Database::toyLoadGraph(file_name);
+
+            // just for checking
+            for (auto v : g.getVertexSet()) {
+                if (g.isLabeled()) {
+                    cout << "For vertex " << v->getId() << " in " << v->getLabel() << endl;
+                } else {
+                    cout << "For vertex " << v->getId() << ":" << endl;
+                }
+
+                for (auto adj : v->getAdj()) {
+                    if (g.isLabeled()) {
+                        cout << adj->getDistance() << "km away from " << adj->getDest()->getId() << " in " << adj->getDest()->getLabel() << endl;
+                    } else {
+                        cout << adj->getDistance() << "km away from " << adj->getDest()->getId() << endl;
+                    }
+                }
+            }
+
         } else if (opt == 2) {
         } else if (opt == 3) {
         } else if (opt == 9) {

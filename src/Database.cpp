@@ -1,11 +1,6 @@
-//
-// Created by manu on 3/15/23.
-//
-
 #include "../includes/Database.h"
 
-// métodos auxiliares
-std::vector<std::string> lineParser(std::string const &line) {
+std::vector<std::string> toyParseLine(std::string const &line) {
     std::vector<std::string> fields;
     std::stringstream ss(line);
     std::string field;
@@ -36,22 +31,10 @@ std::vector<std::string> lineParser(std::string const &line) {
     return fields;
 }
 
-// fim dos métodos auxiliares
+// implementations
 
-std::unordered_map<std::string, int> Database::invertedHash(std::unordered_map<int, int/* uma classe nova ? */> stationHash) {
-    std::unordered_map<std::string, int> inverse;
-    for (auto &it: stationHash) {
-        // inverse[it.second.getName()] = it.first;
-    }
+void loadNodes(std::string file_path) {
 
-    return inverse;
-}
-
-std::unordered_map<int, int /* uma classe nova? */> Database::loadNodes(
-        std::unordered_set<std::string> &districts,
-        std::unordered_set<std::string> &municipalities) {
-
-    std::unordered_map<int, int /* uma classe nova? */> stationHash;
     std::ifstream stations("../docs/stations.csv");
 
     if (stations.is_open()) {
@@ -61,117 +44,60 @@ std::unordered_map<int, int /* uma classe nova? */> Database::loadNodes(
         getline(stations, line); // throwaway first line read
 
         while (getline(stations, line)) {
-            std::vector<std::string> fields = lineParser(line);
 
-            /*
-            station.setName(fields[0]);
-            station.setDistrict(fields[1]);
-            station.setMunicipality(fields[2]);
-            station.setTownship(fields[3]);
-            station.setLine(fields[4]);
-            */
-
-            if (!fields[1].empty()) {
-                districts.insert(fields[1]);
-            }
-            if (!fields[2].empty()) {
-                municipalities.insert(fields[2]);
-            }
-
-            // stationHash[count] = station;
-            count++;
         }
     } else throw std::runtime_error("stations.csv file not found in docs directory!");
 
-    return stationHash;
+    return ;
 }
 
-Graph Database::loadGraph() {
-    std::ifstream network("../docs/network.csv");
-    if (!network.is_open()) {
-        throw std::runtime_error("network.csv file not found in docs directory!");
+Graph Database::toyLoadGraph(std::string file_name) {
+    std::cout << "before adding vertex";
+
+
+    std::ifstream toy_network("../docs/Project2Graphs/Toy-Graphs/" + file_name);
+    if (!toy_network.is_open()) {
+        throw std::runtime_error(file_name + " file not found in docs directory!");
     }
 
     Graph g;
-    std::unordered_set<std::string> districts, municipalities;
-    std::unordered_map<int, int /* uma classe nova? */> stationHash = loadNodes(districts, municipalities);
-    // g.setDistricts(districts);
-    // g.setMunicipalities(municipalities);
-    std::unordered_map<std::string, int> inverseStations = invertedHash(stationHash);
+    std::string line, distance_str, orig_label, dest_label, orig_id_str, dest_id_str;
+    int orig_id, dest_id;
+    float distance = 0;
 
-    std::string line, origStation, destStation;
-    int origId, destId, custo, capacity;
+    getline(toy_network, line); // first line read
+    bool has_label = (line.find("label") != std::string::npos);
 
-    getline(network, line); // throwaway first line read
-    while (getline(network, line)) {
+    while (getline(toy_network, line)) {
         std::stringstream ss(line);
-        std::vector<std::string> fields = lineParser(line);
 
-        /* origStation = fields[0];
-        destStation = fields[1];
-
-        origId = inverseStations[origStation];
-        destId = inverseStations[destStation];
-
-        g.addVertex(origId);
-        g.addVertex(destId);
-        g.addBidirectionalEdge(origId, destId, capacity, custo); */
-    }
-
-    /* g.setStationHash(stationHash);
-    g.setInvertedHash(inverseStations); */
-
-    return g;
-}
-
-Graph Database::loadGraph(std::vector<std::pair<std::string, std::string>> exclude) {
-    std::ifstream network("../docs/network.csv");
-    if (!network.is_open()) {
-        throw std::runtime_error("network.csv file not found in docs directory!");
-    }
-
-    Graph g;
-    std::unordered_set<std::string> districts, municipalities;
-    // auto stationHash = loadNodes(districts, municipalities);
-    /* g.setDistricts(districts);
-    g.setMunicipalities(municipalities); */
-    // auto inverseStations = invertedHash(stationHash);
-
-    std::string line, origStation, destStation;
-    int origId, destId, custo, capacity;
-
-    getline(network, line); // throwaway first line read
-    while (getline(network, line)) {
-        std::stringstream ss(line);
-        std::vector<std::string> fields = lineParser(line);
-
-        origStation = fields[0];
-        destStation = fields[1];
-
-        /*
-        origId = inverseStations[origStation];
-        destId = inverseStations[destStation];
-         */
-
-        g.addVertex(origId);
-        g.addVertex(destId);
-
-        bool skip = false;
-        for (auto pair : exclude) {
-            if ( (pair.first == origStation and pair.second == destStation)
-                 or (pair.first == destStation and pair.second == origStation) ) {
-                skip = true;
-                break;
-            }
+        std::getline(ss, orig_id_str, ',');
+        std::getline(ss, dest_id_str, ',');
+        if (has_label) {
+            std::getline(ss, distance_str, ',');
+            std::getline(ss, orig_label, ',');
+            std::getline(ss, dest_label);
+            g.setLabeled(true);
+        } else {
+            std::getline(ss, distance_str);
         }
 
-        if (!skip) {
-            g.addBidirectionalEdge(origId, destId, capacity, custo);
+        orig_id = std::stoi(orig_id_str);
+        dest_id = std::stoi(dest_id_str);
+        distance = std::stof(distance_str);
+
+        g.addVertex(orig_id);
+        g.addVertex(dest_id);
+
+        // set labels if necessary
+        if (has_label) {
+            g.findVertex(orig_id)->setLabel(orig_label);
+            g.findVertex(dest_id)->setLabel(dest_label);
         }
+
+        g.addBidirectionalEdge(orig_id, dest_id, distance);
     }
 
-    /* g.setStationHash(stationHash);
-    g.setInvertedHash(inverseStations); */
-
+    g.sortVertexSet();
     return g;
 }

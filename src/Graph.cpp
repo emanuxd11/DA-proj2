@@ -1,25 +1,5 @@
-// By: Gonçalo Leão
-
 #include "../includes/Graph.h"
 using namespace std;
-
-// Pode ser útil mas mudar as classes
-/* void Graph::setStationHash(std::unordered_map<int, Station> const &stations) {
-    this->stationHash = stations;
-}
-
-void Graph::setInvertedHash(std::unordered_map<std::string, int> const &stationsInverse) {
-    this->inverseHash = stationsInverse;
-} */
-
-/* std::unordered_map<int, Station> Graph::getStationHash() {
-    return this->stationHash;
-}
-
-std::unordered_map<std::string, int> Graph::getInvertedHash() {
-    return inverseHash;
-}
-*/
 
 int Graph::getNumVertex() const {
     return vertexSet.size();
@@ -27,6 +7,12 @@ int Graph::getNumVertex() const {
 
 std::vector<Vertex *> Graph::getVertexSet() const {
     return vertexSet;
+}
+
+void Graph::sortVertexSet() {
+    std::sort(vertexSet.begin(), vertexSet.end(), [](Vertex *v1, Vertex *v2) {
+        return v1->getId() < v2->getId();
+    });
 }
 
 bool Graph::empty() {
@@ -37,9 +23,11 @@ bool Graph::empty() {
  * Auxiliary function to find a vertex with a given content.
  */
 Vertex *Graph::findVertex(const int &id) const {
-    /* if (stationHash.count(id) == 0) {
-        return nullptr;
-    } */
+    if (id < vertexSet.size()) {
+        if (vertexSet[id]->getId() == id) {
+            return vertexSet[id];
+        }
+    }
 
     for (auto v: vertexSet) {
         if (v->getId() == id) {
@@ -86,22 +74,22 @@ bool Graph::deleteVertex(const int &id){
  * destination vertices and the edge capacity (w).
  * Returns true if successful, and false if the source or destination vertex does not exist.
  */
-bool Graph::addEdge(const int &sourc, const int &dest, int cap, int cost) {
+bool Graph::addEdge(const int &sourc, const int &dest, const float &distance) {
     auto v1 = findVertex(sourc);
     auto v2 = findVertex(dest);
     if (v1 == nullptr || v2 == nullptr)
         return false;
-    auto e1 = v1->addEdge(v2, cap, cost);
+    auto e1 = v1->addEdge(v2, distance);
     return true;
 }
 
-bool Graph::addBidirectionalEdge(const int &sourc, const int &dest, int cap, int cost) {
+bool Graph::addBidirectionalEdge(const int &sourc, const int &dest, const float &distance) {
     auto v1 = findVertex(sourc);
     auto v2 = findVertex(dest);
     if (v1 == nullptr || v2 == nullptr)
         return false;
-    auto e1 = v1->addEdge(v2, cap, cost);
-    auto e2 = v2->addEdge(v1, cap, cost);
+    auto e1 = v1->addEdge(v2, distance);
+    auto e2 = v2->addEdge(v1, distance);
     e1->setReverse(e2);
     e2->setReverse(e1);
     return true;
@@ -116,46 +104,15 @@ void deleteMatrix(int **m, int n) {
     }
 }
 
-// Pode ser útil mas com classes diferentes
-/*
-std::unordered_set<std::string> Graph::getDistricts() {
-    return districts;
+void Graph::setLabeled(bool has_label) {
+    has_labels = has_label;
 }
-
-std::unordered_set<std::string> Graph::getMunicipalities() {
-    return municipalities;
-}
-
-void Graph::setDistricts(std::unordered_set<std::string> districts) {
-    this->districts = districts;
-}
-
-void Graph::setMunicipalities(std::unordered_set<std::string> municipalities) {
-    this->municipalities = municipalities;
-}
-
-int Graph::getStation(const std::string &name) {
-    auto it = inverseHash.find(name);
-    if (it == inverseHash.end()) {
-        throw std::runtime_error("Invalid station name");
-    }
-
-    return it->second;
-}
-
-Station Graph::getStation(int id) {
-    auto it = stationHash.find(id);
-    if (it == stationHash.end()) {
-        throw std::runtime_error("Invalid station id");
-    }
-
-    return it->second;
-}
-*/
 
 Graph::~Graph() {
     deleteMatrix(distMatrix, vertexSet.size());
     deleteMatrix(pathMatrix, vertexSet.size());
 }
 
-
+bool Graph::isLabeled() {
+    return has_labels;
+}
