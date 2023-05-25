@@ -1,5 +1,4 @@
 #include <iostream>
-#include <iomanip>
 #include "../includes/Graph.h"
 #include "../includes/Database.h"
 
@@ -11,11 +10,92 @@ string getInput() {
     return input_string;
 }
 
+Edge *getNearestVertex(Vertex *v) {
+    float distance = INF;
+    Edge *nearest_vertex_path = nullptr;
+
+    for (auto e : v->getAdj()) {
+        if (e->getDest()->isVisited()) continue;
+
+        if (e->getDistance() < distance) {
+            distance = e->getDistance();
+            nearest_vertex_path = e;
+        }
+            /* cout << "distance IS shorter" << endl;
+        } else {
+            cout << "distance not shorter" << endl;
+        } */
+    }
+
+    return nearest_vertex_path;
+}
+
+bool nearestNeighbor(Graph g) {
+    g.markAllUnvisited();
+
+    Vertex *start = g.getVertexSet().front();
+    Vertex *current = start;
+
+    start->setVisited(true);
+
+    while (true) {
+        // cout << "Currently at vertex " << current->getId() << endl;
+
+        Edge *path = getNearestVertex(current);
+        if (path == nullptr) {
+            break;
+        }
+
+        path->getDest()->setVisited(true);
+        current->setPath(path);
+        current = path->getDest();
+    }
+
+    // find edge that connects current to start
+    bool found_final_edge = false;
+    for (auto e : current->getAdj()) {
+        if (e->getDest()->getId() == start->getId()) {
+            cout << "Found edge that connects current to start!" << endl;
+            found_final_edge = true;
+            current->setPath(e);
+        }
+    }
+
+    int not_visited = 0;
+    for (auto v : g.getVertexSet()) {
+        if (!v->isVisited()) {
+            not_visited++;
+        }
+    }
+
+    if (not_visited > 0) cout << "(not all vertices were visited)" << endl;
+    else cout << "(all vertices were visited)" << endl;
+
+    if (!found_final_edge) {
+        cout << "Error, could not connect all edges!" << endl;
+
+        return false;
+    }
+
+    long double total_distance = start->getPath()->getDistance();
+    for (auto now = start->getPath()->getDest(); now != start; ) {
+        total_distance += now->getPath()->getDistance();
+        now = now->getPath()->getDest();
+    }
+
+    cout << "Total distance = " << (int)total_distance << "km" << endl;
+
+    /* cout << "Current id = " << current->getId() << endl;
+    cout << "Start id = " << start->getId() << endl; */
+
+    return true;
+}
+
 void displayMenu() {
     static vector<string> options = {
             "1) Load toy dataset",
             "2) Load real dataset",
-            "3) coming soon...3",
+            "3) Nearest Neighbor Heuristic approximation (might not work for all graphs)",
             "0) Quit"
     };
 
@@ -76,6 +156,12 @@ int main() {
             } */
 
         } else if (opt == 3) {
+            if (g.getVertexSet().empty()) {
+                cout << "Please load a graph first!" << endl;
+                continue;
+            }
+
+            nearestNeighbor(g);
         } else if (opt == 9) {
             break;
         }

@@ -49,8 +49,18 @@ public:
 
     bool isLabeled();
 
+    void markAllUnvisited();
+
 protected:
     std::vector<Vertex *> vertexSet;    // vertex set
+
+    /*
+     * Vector of only unvisited vertices.
+     * This speeds up the final part of the
+     * process of looking for the nearest vertex
+     * in the Nearest Neighbor Heuristic.
+     */
+    std::vector<Vertex *> unvisited_vertices;
 
     bool has_labels = false;
 

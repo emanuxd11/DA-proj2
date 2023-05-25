@@ -130,3 +130,9 @@ Graph::~Graph() {
 bool Graph::isLabeled() {
     return has_labels;
 }
+
+void Graph::markAllUnvisited() {
+    for (auto v : vertexSet) {
+        v->setVisited(false);
+    }
+}
