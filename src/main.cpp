@@ -1,6 +1,7 @@
 #include <iostream>
 #include "../includes/Graph.h"
 #include "../includes/Database.h"
+#include "../includes/Backtracking_TSP.h"
 
 using namespace std;
 
@@ -96,6 +97,7 @@ void displayMenu() {
             "1) Load toy dataset",
             "2) Load real dataset",
             "3) Nearest Neighbor Heuristic approximation (might not work for all graphs)",
+            "4) Backtracking Algorithm",
             "0) Quit"
     };
 
@@ -162,6 +164,28 @@ int main() {
             }
 
             nearestNeighbor(g);
+        } else if (opt == 4) {
+            if (g.getVertexSet().empty()) {
+                cout << "Please load a graph first!" << endl;
+                continue;
+            }
+
+            BacktrackingAlgorithm tspSolver(g);
+            std::vector<int> bestTour = tspSolver.solveBacktrackingAlgorithm();
+
+            // Print the best tour
+            if (bestTour.empty()) {
+                std::cout << "No solution found!" << std::endl;
+            } else {
+                std::cout << "Best Tour: ";
+                for (int vertex : bestTour) {
+                    std::cout << vertex << " ";
+                }
+                std::cout << bestTour[0] << " ";
+                std::cout << std::endl;
+                std::cout << "Total distance: " << tspSolver.getBestTourCost() << std::endl;
+            }
+            
         } else if (opt == 9) {
             break;
         }

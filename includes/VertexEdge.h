@@ -52,6 +52,10 @@ public:
 
     Edge *addEdge(Vertex *dest, float distance);
 
+    bool hasEdge(int destID) const;
+
+    double getEdgeWeight(int destID) const;
+
     bool removeEdge(int destID);
 
     friend class MutablePriorityQueue<Vertex>;

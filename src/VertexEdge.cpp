@@ -19,6 +19,24 @@ Edge *Vertex::addEdge(Vertex *d, float distance) {
     return newEdge;
 }
 
+bool Vertex::hasEdge(int destID) const {
+    for (Edge* edge : adj) {
+        if (edge->getDest()->getId() == destID) {
+            return true;
+        }
+    }
+    return false;
+}
+
+double Vertex::getEdgeWeight(int destID) const {
+    for (Edge* edge : adj) {
+        if (edge->getDest()->getId() == destID) {
+            return edge->getDistance();
+        }
+    }
+    return std::numeric_limits<double>::infinity(); // Return infinity if there is no edge to the destination vertex
+}
+
 /*
  * Auxiliary function to remove an outgoing edge (with a given destination (d))
  * from a vertex (this).
