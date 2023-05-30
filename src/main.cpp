@@ -5,6 +5,21 @@
 
 using namespace std;
 
+const vector<string> extra_graphs = {
+        "edges_25.csv",
+        "edges_50.csv",
+        "edges_75.csv",
+        "edges_100.csv",
+        "edges_200.csv",
+        "edges_300.csv",
+        "edges_400.csv",
+        "edges_500.csv",
+        "edges_600.csv",
+        "edges_700.csv",
+        "edges_800.csv",
+        "edges_900.csv"
+};
+
 string getInput() {
     string input_string;
     std::getline(std::cin, input_string);
@@ -84,7 +99,7 @@ bool nearestNeighbor(Graph g) {
         now = now->getPath()->getDest();
     }
 
-    cout << "Total distance = " << (int)total_distance << "km" << endl;
+    cout << "Total distance = " << (int)total_distance << endl;
 
     /* cout << "Current id = " << current->getId() << endl;
     cout << "Start id = " << start->getId() << endl; */
@@ -95,9 +110,10 @@ bool nearestNeighbor(Graph g) {
 void displayMenu() {
     static vector<string> options = {
             "1) Load toy dataset",
-            "2) Load real dataset",
-            "3) Nearest Neighbor Heuristic approximation (might not work for all graphs)",
+            "2) Load extra medium-sized dataset",
+            "3) Load real dataset",
             "4) Backtracking Algorithm",
+            "5) Nearest Neighbor Heuristic approximation (might not work for all graphs)",
             "0) Quit"
     };
 
@@ -124,46 +140,22 @@ int main() {
             cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             g = Database::toyLoadGraph(file_name);
 
-            // just for checking
-            /* for (auto v : g.getVertexSet()) {
-                if (g.isLabeled()) {
-                    cout << "For vertex " << v->getId() << " in " << v->getLabel() << endl;
-                } else {
-                    cout << "For vertex " << v->getId() << ":" << endl;
-                }
-
-                for (auto adj : v->getAdj()) {
-                    if (g.isLabeled()) {
-                        cout << adj->getDistance() << "km away from " << adj->getDest()->getId() << " in " << adj->getDest()->getLabel() << endl;
-                    } else {
-                        cout << adj->getDistance() << "km away from " << adj->getDest()->getId() << endl;
-                    }
-                }
-            } */
-
         } else if (opt == 2) {
+            for (int i = 1; i <= extra_graphs.size(); i++) {
+                cout << i << " - " << extra_graphs[i - 1] << endl;
+            }
+            cout << "Pick an option: ";
+            int opt_number;
+            cin >> opt_number;
+            g = Database::mediumLoadGraph(extra_graphs[opt_number - 1]);
+
+        } else if (opt == 3) {
             cout << "Please input real graph directory name (graph1/2/3): ";
             string graph_name;
             cin >> graph_name;
             cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             g = Database::realLoadGraph(graph_name);
 
-            // just for checking
-            /* cout << setprecision(15);
-            for (auto v : g.getVertexSet()) {
-                cout << "For vertex " << v->getId() << " at (" << v->getLongitude() << ", " << v->getLatitude() << "):" << endl;
-                for (auto adj : v->getAdj()) {
-                    cout << adj->getDistance() << "km away from " << adj->getDest()->getId() << " at (" << adj->getDest()->getLongitude() << ", " << adj->getDest()->getLatitude() << "):"<< endl;
-                }
-            } */
-
-        } else if (opt == 3) {
-            if (g.getVertexSet().empty()) {
-                cout << "Please load a graph first!" << endl;
-                continue;
-            }
-
-            nearestNeighbor(g);
         } else if (opt == 4) {
             if (g.getVertexSet().empty()) {
                 cout << "Please load a graph first!" << endl;
@@ -185,6 +177,14 @@ int main() {
                 std::cout << std::endl;
                 std::cout << "Total distance: " << tspSolver.getBestTourCost() << std::endl;
             }
+
+        } else if (opt == 5) {
+            if (g.getVertexSet().empty()) {
+                cout << "Please load a graph first!" << endl;
+                continue;
+            }
+
+            nearestNeighbor(g);
             
         } else if (opt == 9) {
             break;

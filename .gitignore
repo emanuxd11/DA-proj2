@@ -2,4 +2,6 @@
 cmake-build-debug/*
 docs/__MACOSX/Project2Graphs/Real-World-Graphs/*
 docs/Project2Graphs/Real-World-Graphs/*
+docs/Project2Graphs/Extra_Fully_Connected_Graphs/*
+docs/__MACOSX/Project2Graphs/Extra_Fully_Connected_Graphs/*
 

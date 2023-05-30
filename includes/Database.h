@@ -12,6 +12,8 @@ class Database {
 public:
     static Graph toyLoadGraph(std::string file_name);
 
+    static Graph mediumLoadGraph(std::string file_name);
+
     static Graph realLoadGraph(std::string graph_name);
 };
 

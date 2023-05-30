@@ -82,6 +82,54 @@ Graph Database::toyLoadGraph(std::string file_name) {
     return g;
 }
 
+Graph Database::mediumLoadGraph(std::string file_name) {
+    std::ifstream toy_network("../docs/Project2Graphs/Extra_Fully_Connected_Graphs/" + file_name);
+    if (!toy_network.is_open()) {
+        throw std::runtime_error(file_name + " file not found in extra graphs directory!");
+    }
+
+    Graph g;
+    std::string line, distance_str, orig_label, dest_label, orig_id_str, dest_id_str;
+    int orig_id, dest_id;
+    float distance = 0;
+
+    getline(toy_network, line); // first line read
+    bool has_label = (line.find("label") != std::string::npos);
+
+    while (getline(toy_network, line)) {
+        std::stringstream ss(line);
+
+        std::getline(ss, orig_id_str, ',');
+        std::getline(ss, dest_id_str, ',');
+        if (has_label) {
+            std::getline(ss, distance_str, ',');
+            std::getline(ss, orig_label, ',');
+            std::getline(ss, dest_label);
+            g.setLabeled(true);
+        } else {
+            std::getline(ss, distance_str);
+        }
+
+        orig_id = std::stoi(orig_id_str);
+        dest_id = std::stoi(dest_id_str);
+        distance = std::stof(distance_str);
+
+        g.addVertex(orig_id);
+        g.addVertex(dest_id);
+
+        // set labels if necessary
+        if (has_label) {
+            g.findVertex(orig_id)->setLabel(orig_label);
+            g.findVertex(dest_id)->setLabel(dest_label);
+        }
+
+        g.addBidirectionalEdge(orig_id, dest_id, distance);
+    }
+
+    g.sortVertexSet();
+    return g;
+}
+
 Graph Database::realLoadGraph(std::string graph_name) {
 
     Graph g = loadNodes(graph_name);
