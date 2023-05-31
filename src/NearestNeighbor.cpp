@@ -9,6 +9,12 @@ using namespace std;
 
 NearestNeighbor::NearestNeighbor(Graph g) : graph(g)  {}
 
+/**
+ * This algorithm finds the nearest unvisited vertex to the one passed as argument.
+ * Time complexity: O(|V|).
+ * @param v Vertex, vertex in question.
+ * @return nearest_vertex_path, Edge*, or nullptr in case no unvisited vertex is found in v's adjacency list.
+ */
 Edge *getNearestVertex(Vertex *v) {
     float distance = INF;
     Edge *nearest_vertex_path = nullptr;
@@ -20,15 +26,20 @@ Edge *getNearestVertex(Vertex *v) {
             distance = e->getDistance();
             nearest_vertex_path = e;
         }
-        /* cout << "distance IS shorter" << endl;
-    } else {
-        cout << "distance not shorter" << endl;
-    } */
     }
 
     return nearest_vertex_path;
 }
 
+/**
+ * This heuristic approximates a shortest hamiltonian cycle for a strongly connected graph (nearest neighbor heuristic).
+ * It starts at a random vertex and always follows the path of least distance until all vertices are visited, then
+ * linking back to the original vertex.
+ * Time complexity: O(|V| * (|V| - 1)).
+ * @param idx int, index for the random vertex in the vertex set.
+ * @return true/false, bool, to indicate whether this heuristic is applicable or not (only works for
+ * strongly connected graphs).
+ */
 bool NearestNeighbor::calculateTour(int idx) {
     graph.markAllUnvisited();
 
@@ -75,6 +86,14 @@ bool NearestNeighbor::calculateTour(int idx) {
     return true;
 }
 
+/**
+ * This function performs the complete heuristic. In this case we run it 50 times (50 is a good balance between
+ * execution time and accuracy especially for the larger graphs that were provided), with 50 different random
+ * starting vertices, and then simply take the best tour out of all 50.
+ * Time complexity: O(|V| * (|V| - 1)).
+ * @return true/false, bool, to indicate whether this heuristic is applicable or not (only works for
+ * strongly connected graphs).
+ */
 bool NearestNeighbor::run() {
     std::mt19937 rng(static_cast<unsigned int>(std::time(nullptr)));
     std::uniform_int_distribution<std::size_t> distribution(0, graph.getVertexSet().size() - 1);
@@ -85,9 +104,7 @@ bool NearestNeighbor::run() {
     for (int i = 0; i < 50; i++) {
         size_t idx = distribution(rng);
 
-        if (!calculateTour(idx)) {
-            return false;
-        }
+        calculateTour(idx);
 
         if (this->distance < min_distance) {
             best_order = this->order;
