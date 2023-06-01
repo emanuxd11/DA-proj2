@@ -3,6 +3,7 @@
 #include "../includes/Database.h"
 #include "../includes/Backtracking_TSP.h"
 #include "../includes/NearestNeighbor.h"
+#include "../includes/TriangularApprox.h"
 
 using namespace std;
 
@@ -27,7 +28,8 @@ void displayMenu() {
             "2) Load extra medium-sized dataset of fully connected graphs",
             "3) Load real dataset",
             "4) Backtracking Algorithm",
-            "5) Nearest Neighbor Heuristic approximation (for fully connected graphs)",
+            "5) Triangular approximation heuristic",
+            "6) Nearest Neighbor Heuristic approximation (for fully connected graphs)",
             "0) Quit"
     };
 
@@ -92,7 +94,25 @@ int main() {
                 std::cout << "Total distance: " << tspSolver.getBestTourCost() << std::endl;
             }
 
-        } else if (opt == 5) {
+        } else if(opt == 5){
+            if (g.getVertexSet().empty()) {
+                cout << "Please load a graph first!" << endl;
+                continue;
+            }
+            TriangularApprox triangularApprox(g);
+            std::vector<int> result = triangularApprox.triangularApproximationTSP(g.getVertexSet());
+            if (result.empty()) {
+                std::cout << "No solution found!" << std::endl;
+            } else {
+                std::cout << "result: ";
+                for (int vertex : result) {
+                    std::cout << vertex << " ";
+                }
+                std::cout << std::endl;
+            }
+
+
+        } else if (opt == 6) {
             if (g.getVertexSet().empty()) {
                 cout << "Please load a graph first!" << endl;
                 continue;

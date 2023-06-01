@@ -10,4 +10,6 @@ add_executable (
         src/UFDS.cpp includes/UFDS.h
         src/VertexEdge.cpp includes/VertexEdge.h
         src/Database.cpp includes/Database.h
-        src/Backtracking_TSP.cpp includes/NearestNeighbor.h src/NearestNeighbor.cpp)
+        src/Backtracking_TSP.cpp
+        includes/NearestNeighbor.h src/NearestNeighbor.cpp
+        includes/TriangularApprox.h src/TriangularApprox.cpp)
