@@ -19,8 +19,13 @@ public:
 
 protected:
     Graph graph;
-    int haversine();
     int findNearestNeighbor(const std::vector<Vertex *>& nodes, int currentNodeIndex);
+    void preorderWalk(int u, std::vector<bool> &visited, std::vector<int> &tour);
+    void dfs(int v);
+    double haversine(double lat1, double lon1, double lat2, double lon2);
+    int minKey(int key[], bool mstSet[]);
+    Graph prim();
+    void printMST(int parent[]);
 };
 
 #endif //DA_PROJ2_TRIANGULARAPPROX_H

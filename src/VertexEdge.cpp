@@ -37,6 +37,8 @@ double Vertex::getEdgeWeight(int destID) const {
     return std::numeric_limits<double>::infinity(); // Return infinity if there is no edge to the destination vertex
 }
 
+
+
 /*
  * Auxiliary function to remove an outgoing edge (with a given destination (d))
  * from a vertex (this).
@@ -210,3 +212,8 @@ bool Edge::getAvailable() {
 float Edge::getDistance() const {
     return distance;
 }
+
+void Edge::setDistance(float distance) {
+    this->distance = distance;
+}
+

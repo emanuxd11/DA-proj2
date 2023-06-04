@@ -109,6 +109,8 @@ public:
 
     float getDistance() const;
 
+    void setDistance(float distance);
+
     bool isSelected() const;
 
     Vertex *getOrig() const;
