@@ -135,7 +135,7 @@ Graph TriangularApprox::prim(){
  * Algorithm which calculates the result
  * 1st -> calculates distances of all vertices with their coordenates
  * 2st -> constructs the MST
- * 3st -> it was supposed to iterare the MST in preorder to create the vector tour with the vertices in the MST
+ * 3st -> it was supposed to iterate the MST in preorder to create the vector tour with the vertices in the MST
  * @param nodes
  * @return tour, vector with the vertices of MST
  */
